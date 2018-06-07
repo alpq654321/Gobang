@@ -1,0 +1,137 @@
+body{
+	-moz-user-select:none; /*去除浏览器默认样式，所有文字不能被选择，包含了以下主流浏览器：火狐、谷歌、IE、苹果*/
+	-ms-user-select:none; 
+	-webkit-user-select:none;
+	-khtml-user-select:none; 
+	cursor: default; /* 默认光标 */
+}
+
+#img{ /*给所有浏览器设置背景，这里设置成深绿到浅绿*/
+  background: -webkit-linear-gradient(#002D51, #79D0ff);
+  background: -o-linear-gradient(#002D51, #79D0ff);
+  background: -moz-linear-gradient(#002D51, #79D0ff);
+  background: linear-gradient(#002D51, #79D0ff);
+}
+
+
+#welcome, #username,#password,.Name{ /*给welcome和username和password以及所有用户的名字设置格式，包括位置，字体以及颜色（它们是类似的）*/
+	position:absolute;
+	font-family: Segoe UI Light, Segoe UI Symbol, Microsoft Yahei;
+	color: White;
+	opacity: 0;
+}
+
+#rival,#me,#black,#white{ /*在对战面板中给自身棋子颜色，以及当前是谁的回合设置位置字体以及颜色*/
+	position:absolute;
+	font-family: Segoe UI Light, Segoe UI Symbol, Microsoft Yahei;
+	color: Black;
+	opacity: 0;
+}
+
+#register, #submit{  /*设置注册和登录的格式*/
+	display:none;
+	position:absolute;
+	font-family: Segoe UI Symbol, Microsoft Yahei; 
+	background-color: rgba(255, 255, 255, 0.25);/*设置选框背景颜色*/
+	color: White;
+	font-size: 3em;
+	opacity: 0; 
+	border-radius: 50px;   /*设置选框大小*/
+	cursor: pointer;  /*这是一个按钮*/
+	padding: 5px 30px 8px 30px;  /*设置字体与选框的间距*/
+	transition: box-shadow 0.3s; 
+	-moz-transition: box-shadow 0.3s;
+	-webkit-transition: box-shadow 0.3s;
+	-o-transition: box-shadow 0.3s;
+}
+#surrender{  /*设置认输的格式*/
+	position:absolute;
+	font-family: Segoe UI Symbol, Microsoft Yahei; 
+	background-color: rgba(30, 60, 90, 0.25);/*设置选框背景颜色*/
+	color: Black;
+	opacity: 1; 
+	font-size: 3em;
+	border-radius: 50px;   /*设置选框大小*/
+	cursor: pointer;  /*这是一个按钮*/
+	padding: 5px 30px 8px 30px;  /*设置字体与选框的间距*/
+	transition: box-shadow 0.3s; 
+	-moz-transition: box-shadow 0.3s;
+	-webkit-transition: box-shadow 0.3s;
+	-o-transition: box-shadow 0.3s;
+}
+.Invite  /*邀请按钮*/
+{
+	display:none;
+	position:absolute;
+	font-family: Segoe UI Symbol, Microsoft Yahei; 
+	background-color: rgba(255, 255, 255, 0.25);/*设置选框背景颜色*/
+	color: White;
+	font-size: 2em;
+	border-radius: 50px;   /*设置选框大小*/
+	cursor: pointer;  /*这是一个按钮*/
+	padding: 5px 30px 8px 30px;  /*设置字体与选框的间距*/
+	transition: box-shadow 0.3s; 
+	-moz-transition: box-shadow 0.3s;
+	-webkit-transition: box-shadow 0.3s;
+	-o-transition: box-shadow 0.3s;
+	position: absolute;
+}
+#surrender:hover{  /*认输按钮的shadow*/
+	box-shadow: 0px 0px 20px #003366;
+}
+#register:hover, #submit:hover{  /*因为这些都是选择器，设置box的shadow使得与其它box与众不同*/
+	box-shadow: 0px 0px 20px #ffffff;
+}
+
+.Invite:hover{  /*因为这些都是选择器，设置box的shadow使得与其它box与众不同*/
+	box-shadow: 0px 0px 20px #ffffff;
+}
+
+#welcome2, #choose{
+	position:absolute;
+	font-family: Segoe UI Light, Segoe UI Symbol, Microsoft Yahei;
+	color: White;
+	opacity: 0;
+}
+#Frame{ /*设置那个灰色的框框*/
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding: 20px 20px 20px 20px;
+	position: absolute;
+	top: 33px;
+	height: 350px;
+	width: 350px;
+	background-color: rgba(220, 220, 220, 0.75);
+	border-radius: 10px;
+	font-family: Segoe UI Light, Segoe UI Symbol, Microsoft Yahei;
+	font-size: 1em;
+	color: Black;
+	z-index: 1;
+	display: none;
+	-moz-user-select: text;
+	-webkit-user-select: text;
+	-ms-user-select: text;
+	-khtml-user-select: text;
+	cursor: auto;
+}
+
+#draftsTitle{   /*设置用户列表的信息*/
+	color: White;
+	font-family: Segoe UI Light, Segoe UI Symbol, Microsoft Yahei;
+	font-size: 20px;
+	position: absolute;
+	top: 15px;
+	left: 70px;
+}
+#draftsDashboard{  /*设置用户列表的信息*/
+	display:none;
+	top:130px;
+	position: absolute;
+	background-color: rgba(255, 255, 255, 0.25);
+	width: 370px;
+	border-radius: 15px;
+	transition: box-shadow 0.5s;
+	-moz-transition: box-shadow 0.5s;
+	-webkit-transition: box-shadow 0.5s;
+	-o-transition: box-shadow 0.5s;
+}

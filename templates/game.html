@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<script src="{{url_for('static', filename='jquery.js')}}"></script> <!--jquery-->
+	<link href="{{url_for('static', filename='style.css')}}" rel='stylesheet'/> <!--用于排版-->
+    <title>五子棋对战界面</title>
+    <style type="text/css">
+        canvas{
+        display: block;
+        margin: 50px auto;
+        box-shadow: -2px -2px 2px #F3F2F2, 5px 5px 5px #6F6767;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="mycanvas" width="450px" height="450px"></canvas>
+	<div id='black' style='font-size:5em'>大兄弟你黑的</div>
+	<div id='white' style='font-size:5em'>大兄弟你白的</div> 
+	<div id='rival' style='font-size:4em'>对手的回合</div>
+	<div id='me' style='font-size:4em'>你的回合</div>
+	<div id='surrender' style='font-size:2em'>投降</div>
+    <script type="text/javascript">
+		var OK = false;  //表示是否是它的回合
+		var now = {{text}} //获得棋子颜色
+		var enemy = {{en_emy|safe}}
+		var username = {{user_name|safe}} //获得用户名
+		function centerIt(x, delta) //调整位置
+		{
+			var midWidth = parseInt($('#img').css('height')) >> 2;
+			var midHeight = document.body.clientWidth >> 1;
+			x.css('top', midWidth + delta);
+			x.css('left', midHeight - (((parseInt(x.css('width'))) >> 1) + parseInt(x.css('padding-left'))));
+		}
+		function showIt(x) //从透明度为0到透明度为1，并具有动画效果
+		{
+			var det = parseInt(x.css('height')) >> 2;
+			x.css('top', (parseInt(x.css('top'))) - det);
+			x.css('display', 'block');
+			x.animate({'top':'+=' + det.toString(), 'opacity':'+=1'}, 1000);
+		}
+		centerIt($('#black'), 500);
+		centerIt($('#white'), 500);
+		centerIt($('#rival'), 610);
+		centerIt($('#me'), 610);
+		centerIt($('#surrender'),500);
+		var middle = document.body.clientWidth >> 1;
+		$('#surrender').css('left', middle+300);
+		
+				
+		if (now===1) setTimeout("showIt($('#black'))", 1000); else setTimeout("showIt($('#white'))", 1000);
+		if (now===1) setTimeout("showIt($('#me'))", 1000); else setTimeout("showIt($('#rival'))", 1000);
+        var chess = document.getElementById("mycanvas"); //利用canvas画这个棋盘
+        var context = chess.getContext('2d');
+        var me = true;
+		if (now===0) me =false;
+        var chessBox = [];//用于存放棋盘中落子的情况
+        for(var i=0;i<15;i++){
+            chessBox[i]=[];
+            for(var j=0;j<15;j++){
+                chessBox[i][j]=0;//初始值为0
+            }
+        }
+        function drawChessBoard(){
+            for(var i=0;i<15;i++){
+                context.strokeStyle="#D6D1D1";
+                context.moveTo(15+i*30,15);//垂直方向画15根线，相距30px;
+                context.lineTo(15+i*30,435);
+                context.stroke();
+                context.moveTo(15,15+i*30);//水平方向画15根线，相距30px;棋盘为14*14；
+                context.lineTo(435,15+i*30);
+                context.stroke();
+            }
+        }
+        drawChessBoard();//绘制棋盘
+        function oneStep(i,j,k){
+            context.beginPath();
+            context.arc(15+i*30,15+j*30,13,0,2*Math.PI);//绘制棋子
+            var g=context.createRadialGradient(15+i*30,15+j*30,13,15+i*30,15+j*30,0);//设置渐变
+            if(k){                           //k=true是黑棋，否则是白棋
+                g.addColorStop(0,'#0A0A0A');//黑棋
+                g.addColorStop(1,'#636766');
+            }else {
+                g.addColorStop(0,'#D1D1D1');//白棋
+                g.addColorStop(1,'#F9F9F9');
+            }
+            context.fillStyle=g;
+            context.fill();
+            context.closePath();
+        }
+		function IN(x,y)  //表示这个棋子是否在棋盘上
+		{
+			if (x<0 || x>=15 || y<0 || y>=15) return false;
+			return true;
+		}
+		function check()  //是否已经结束游戏，从枚举起点四个方向判断
+		{
+			var FLAG = false;
+			for (var i = 0; i < 15; i++)
+			  for (var j = 0; j< 15; j++)
+			  if (chessBox[i][j]!==0)
+			  {
+			    if (IN(i,j+4)) {var ojbk=true; for (var k = 1; k < 5; k++) if (chessBox[i][j+k]!==chessBox[i][j]) ojbk=false; if (ojbk === true) FLAG=true;}
+				if (IN(i+4,j)) {var ojbk=true; for (var k = 1; k < 5; k++) if (chessBox[i+k][j]!==chessBox[i][j]) ojbk=false; if (ojbk === true) FLAG=true;}
+				if (IN(i+4,j+4)) {var ojbk=true; for (var k = 1; k < 5; k++) if (chessBox[i+k][j+k]!==chessBox[i][j]) ojbk=false; if (ojbk === true) FLAG=true;}
+				if (IN(i+4,j-4)) {var ojbk=true; for (var k = 1; k < 5; k++) if (chessBox[i+k][j-k]!==chessBox[i][j]) ojbk=false; if (ojbk === true) FLAG=true;}
+			  }
+			return FLAG;
+		}
+		function finish(x,y=0)  //如果已经结束游戏，返回给客户端他的结果，这里如果y=0则表示是正常结束，y=1表示是对方认输
+		{
+			$.ajax({  
+							type:"POST",  
+							url:"/finish",
+							data:{"username":username,"state":x},  
+							dataType:"json",  
+							success:function(data){
+							if (x==="win")
+							{
+								if (y===0)  
+									alert('大兄弟，你赢了！！');
+								else
+									alert('大兄弟，对方认输了！！');
+							}
+							else
+								alert('小兄弟，你输了:(');
+							window.location.href='/';
+				}
+			});
+		}
+		$("#surrender").click(function() {
+			if (OK == true)
+			{
+				OK = false;
+				$.ajax({  //告诉服务器它的行动
+							type:"POST",  
+							url:"/next",
+							data:{"user1":username, "user2":enemy, "who":1-now, "X":30, "Y":30},    //下到(30,30)这个位置就认为是认输
+							dataType:"json",  
+							success:function(data)
+							{
+								finish("lose");
+							}
+						});
+			}
+		});
+        chess.onclick=function(e){  //按了一下棋盘上的一个点
+			if (OK == true) //如果此时该客户端被允许按，才能按
+			{
+				var x = e.offsetX;//相对于棋盘左上角的x坐标
+				var y = e.offsetY;//相对于棋盘左上角的y坐标
+				var i = Math.floor(x/30);
+				var j = Math.floor(y/30);
+				if( chessBox[i][j] == 0 ) {
+					oneStep(i,j,me);
+					if(me){
+						chessBox[i][j]=1;
+					}else{
+						chessBox[i][j]=2;
+					}
+				$('#me').fadeOut();  //更新现在的回合
+				$('#rival').css('display', 'block');
+				$('#rival').css('opacity', '1');
+				$('#rival').fadeIn();
+				OK = false;
+				$.ajax({  //告诉服务器它的行动
+							type:"POST",  
+							url:"/next",
+							data:{"user1":username, "user2":enemy, "who":1-now, "X":i, "Y":j},  
+							dataType:"json",  
+							success:function(data)
+							{
+							if (check() == true) finish("win");
+							}
+			});
+			 }
+			}
+        }
+		
+		$.ajaxSetup({async:false})
+        setInterval('ok()',2000)
+        function ok(){
+            $("#table  tr:not(:first)").html("");
+            $.get('/who/'+username,function(data){  //服务器告诉客户端上一步是怎么操作的
+                var SP=data.split(','); 
+				if (parseInt(SP[0])===now)  //如果对手已经操作过了
+				{
+					var X=parseInt(SP[1]),Y=parseInt(SP[2]);
+					if (X==30 && Y==30)  //对方认输了
+						finish("win",1)
+					if (X<=15 && Y<=15 && chessBox[X][Y] === 0)
+					{
+						oneStep(X,Y,1-me);
+						if(me)
+							chessBox[X][Y]=2;
+						else
+							chessBox[X][Y]=1;
+						if (check()==true) finish("lose");
+					}
+					if (OK === false) 
+					{
+					$('#rival').fadeOut();
+					$('#me').css('display', 'block');
+					$('#me').css('opacity', '1');
+					$('#me').fadeIn();
+					OK = true;  
+					}
+					}
+				});
+				}
+    </script>
+</body>
+</html>

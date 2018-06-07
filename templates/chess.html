@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset='UTF-8'/>
+	<link href="{{url_for('static', filename='style.css')}}" rel='stylesheet'/> <!--用于排版-->
+	<script src="{{url_for('static', filename='jquery.js')}}"></script> <!--jquery-->
+	<script src="{{url_for('static', filename='Game.js')}}"></script> <!--用于生成对局-->
+</head>
+
+<body>
+	<!--界面模块-->
+	<canvas id="mycanvas" width="450px" height="450px"></canvas>
+	<div id='Frame' style='background-color:rgba(200,200,200,0.75);border-radius:20px;left:300px;top:200px;z-index:11;font-size:3em;width:700px;padding:40px 40px 40px 40px;height:200px;'></div> <!--游戏结果模块-->
+	<div id='img' style='z-index:-1;top:0px;left:0px;position:absolute;width:100%;height:200%;'></div> <!--背景模块-->
+	<div id='welcome' style='font-size:7em'>五子棋竞技场</div> 
+	<div id='welcome2' style='font-size:7em'>五子棋竞技场</div> 
+	<div id='choose' style='font-size:5em'>请选择你要挑战的对手</div> 
+	<div id='username' style='font-size:3em'>用户名 <input id='username_text' style='font-size:1em', type=text> </div>
+	<div id='password' style='font-size:3em'>密码！ <input id='password_text' style='font-size:1em', type=password> </div>
+	
+	<div id='submit'>&nbsp;&nbsp;登录&nbsp;&nbsp;</div>
+	<div id='register'>&nbsp;&nbsp;注册&nbsp;&nbsp;</div>
+	<div id='draftsDashboard' style='height:110px;width:345px;'> 
+		<div id='draftsTitle' style='font-size:3em'> 用户列表</div>
+	</div>
+	
+	<script src="{{url_for('static', filename='main.js')}}"></script> 
+</body>
+
+</html>
